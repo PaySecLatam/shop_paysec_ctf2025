@@ -1,0 +1,17 @@
+services:
+  nginx:
+    image: nginx:1.25-alpine
+    ports:
+      - "8443:8443"
+    volumes:
+      - ./nginx/nginx.conf:/etc/nginx/nginx.conf:ro
+      - ./nginx/certs:/etc/nginx/certs:ro
+    depends_on:
+      - shop
+
+  shop:
+    build: ./tienda
+    environment:
+      - NODE_ENV=production
+    volumes:
+      - ./tienda/dev:/app/dev:ro

@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>My Shop CTF</title>
+<link rel="stylesheet" href="/style.css">
+</head>
+<body>
+<header class="hero">
+  <h1 class="title">La Meche de los Payments</h1>
+  <p class="subtitle">Free Flags Since 2025</p>
+</header>
+
+<section class="cta">
+  <p>Discover our exclusive collection of high-quality products for you hacker, clone the world and be happy.</p>
+  <a class="btn" href="#catalog">EXPLORE PRODUCTS</a>
+</section>
+
+<section id="catalog" class="grid">
+  <% products.forEach(p => { %>
+    <div class="card">
+      <h3><%= p.name %></h3>
+      <p class="tagline"><%= p.tagline %></p>
+      <div class="price">$<%= p.price.toFixed(2) %></div>
+      <a class="btn ghost" href="/product/<%= p.id %>">VIEW DETAILS</a>
+    </div>
+  <% }) %>
+</section>
+
+<footer class="footer">Totally_not_a_virus_trust_me...im dolphin.EXE</footer>
+</body>
+</html>

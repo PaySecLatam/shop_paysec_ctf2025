@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title><%= product.name %> - Payment</title>
+<link rel="stylesheet" href="/style.css">
+</head>
+<body>
+<nav class="back"><a href="/">← Back to Products Selection</a></nav>
+
+<section class="product-detail">
+  <div class="media">
+    <div class="mock-image"><img src="<%= product.img %>" alt="<%= product.name %>"></div>
+  </div>
+  <aside class="info">
+    <h2><%= product.name %></h2>
+    <div class="price">$<%= product.price.toFixed(2) %></div>
+    <p class="tagline"><%= product.tagline %></p>
+    <ul class="bullets">
+      <li>Entry-level RFID Hacker</li>
+      <li>Test Emulation Cards</li>
+      <li>Hack cards</li>
+    </ul>
+  </aside>
+</section>
+
+<section class="checkout">
+  <h3>Purchase <%= product.name %></h3>
+  <form id="purchaseForm" action="/purchase" method="POST" class="form">
+    <input type="hidden" name="id" value="<%= product.id %>"/>
+    <input type="hidden" name="signature" id="signature"/>
+    
+    <label>Card Number:</label>
+    <input name="cc" placeholder="1234 5678 9012 3456" required>
+    
+    <label>Expiration Date (MM/YY):</label>
+    <input name="exp" placeholder="12/25" required>
+    
+    <label>CVV:</label>
+    <input name="cvv" placeholder="123" required>
+    
+    <label>Postal Code:</label>
+    <input name="zip" placeholder="12345" required>
+    
+    <label>Amount (USD):</label>
+    <input name="amount" value="<%= product.price.toFixed(2) %>">
+    
+    <button type="submit" class="btn wide">PURCHASE NOW</button>
+  </form>
+</section>
+
+<script>
+  const form = document.getElementById('purchaseForm');
+
+  // Función para generar HEX solo con id:name:price
+  function generateHex(id, name, price) {
+    const str = `${id}:${name}:${price}`;
+    let hex = '';
+    for (let i = 0; i < str.length; i++) {
+      hex += str.charCodeAt(i).toString(16);
+    }
+    return hex;
+  }
+
+  form.addEventListener('submit', (e) => {
+    const id = form.querySelector('input[name="id"]').value;
+    const name = "<%= product.name %>";
+    const price = "<%= product.price %>";
+
+    // Generar la firma HEX correcta para el backend
+    form.querySelector('#signature').value = generateHex(id, name, price);
+  });
+
+  // Formateo de inputs
+  const ccInput = document.querySelector('input[name="cc"]');
+  ccInput.addEventListener('input', (e) => {
+    let value = e.target.value.replace(/\s/g, '').substring(0, 16);
+    e.target.value = value.replace(/(\d{4})(?=\d)/g, '$1 ');
+  });
+
+  const expInput = document.querySelector('input[name="exp"]');
+  expInput.addEventListener('input', (e) => {
+    let value = e.target.value.replace(/\D/g, '');
+    if (value.length >= 2) value = value.substring(0, 2) + (value.length > 2 ? '/' : '') + value.substring(2, 4);
+    e.target.value = value;
+  });
+
+  const cvvInput = document.querySelector('input[name="cvv"]');
+  cvvInput.addEventListener('input', (e) => e.target.value = e.target.value.replace(/\D/g, '').substring(0, 3));
+
+  const zipInput = document.querySelector('input[name="zip"]');
+  zipInput.addEventListener('input', (e) => e.target.value = e.target.value.replace(/\D/g, '').substring(0, 5));
+</script>
+</body>
+</html>
